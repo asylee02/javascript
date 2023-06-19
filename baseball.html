@@ -16,8 +16,60 @@
     const $input = document.querySelector("#input");
     const $form = document.querySelector("#form");
     const $logs = document.querySelector("#logs");
+    const chance=0;
 
-    let answer=
+    const numbers=[];
+    for (let n=0; n<9; n+=1){
+        numbers.push(n+1);
+    }
+    const answer=[];
+    for (let n=0; n<4; n+=1){
+        const index = Math.floor(Math.random()*numbers.length);
+        answer.push(numbers[index]);
+        numbers.splice(index,1);
+    }
+    const tries =[];
+    const checkInput=(input)=>{
+        if(input.length !==4){
+            return alert('4자리 숫자를 입력해 주세요.');
+        }
+        if (new Set(input).size !==4){
+            return alert('중복되지 않게 입력해 주세요.');
+        }
+        if (tries.includes(input)){
+            return alert('이미 시도한 값입니다.');
+        }
+        return true;
+    }
+
+        // const strike =0;
+        // const ball=0;
+        // for(let n=0; n<4; n+=1){
+        //     if(input[n]==answer[n]){
+        //         strike+=1;
+        //     }
+        //     else{
+        //         for(let i=0; i<4; i+=1){
+        //             if(input[n]==answer[i]){
+        //                 ball+=1;
+        //             }
+        //         }
+        //     }
+        //     tries.push(input+": strike="+strike+", ball="+ball);
+        // }
+        // $logs.textContent=tires.push[chance];
+        // chance+=1;
+
+    
+    $form.addEventListener('submit',(event)=>{
+        event.preventDefault(); // 자동 동작 막기 (submit의 새로고침 동작)
+        const value=$input.value;
+        $input.value='';
+        if(checkInput(value)){
+            tries.push(value);
+        }
+        else{}
+    })
 </script>
 </body>
 </html>
