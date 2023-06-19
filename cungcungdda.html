@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p><span id="order">1</span>번째 참가자</p>
+    <p>제시어 :<span id="answer"></span> </p>
+    <input id="input">
+    <button id="button">입력</button>
+    <Script>
+        const number = prompt("참가자 수는 몇명인가요?");
+        const input = document.querySelector("#input");
+        const button = document.querySelector("#button");
+        const answer = document.querySelector('#answer')
+        let word;
+        let newword;
+
+
+        const onclick = () =>{
+            if(!word){
+                word=newword;
+                if(word.length==3){
+                answer.textContent=word;
+                input.value=""
+                }
+                else{
+                    alert("글자 수가 틀렸습니다 다시 입력하세요.")
+                    input.value=""
+                    word.textContent.remove();
+                }
+            }
+            else{
+                if(word[word.length-1]==newword[0]){
+                    word=newword
+                    answer.textContent=word;
+                }
+                else{
+                    alert("단어가 틀렸습니다 다시 입력하세요.")
+                }
+            }
+        }
+        const oninput = (event) =>{newword = event.target.value;}
+
+        input.addEventListener('input',oninput);
+        button.addEventListener('click',onclick);
+    </Script>
+</body>
+
+</html>
