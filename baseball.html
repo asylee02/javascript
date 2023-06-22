@@ -16,7 +16,8 @@
     const $input = document.querySelector("#input");
     const $form = document.querySelector("#form");
     const $logs = document.querySelector("#logs");
-    const chance=0;
+    const tries =[];
+    let out=0;
 
     const numbers=[];
     for (let n=0; n<9; n+=1){
@@ -28,8 +29,9 @@
         answer.push(numbers[index]);
         numbers.splice(index,1);
     }
-    const tries =[];
+    
     const checkInput=(input)=>{
+        
         if(input.length !==4){
             return alert('4자리 숫자를 입력해 주세요.');
         }
@@ -42,34 +44,38 @@
         return true;
     }
 
-        // const strike =0;
-        // const ball=0;
-        // for(let n=0; n<4; n+=1){
-        //     if(input[n]==answer[n]){
-        //         strike+=1;
-        //     }
-        //     else{
-        //         for(let i=0; i<4; i+=1){
-        //             if(input[n]==answer[i]){
-        //                 ball+=1;
-        //             }
-        //         }
-        //     }
-        //     tries.push(input+": strike="+strike+", ball="+ball);
-        // }
-        // $logs.textContent=tires.push[chance];
-        // chance+=1;
-
     
     $form.addEventListener('submit',(event)=>{
         event.preventDefault(); // 자동 동작 막기 (submit의 새로고침 동작)
         const value=$input.value;
+        
         $input.value='';
         if(checkInput(value)){
-            tries.push(value);
+            
+        if(answer.join('')===value){$logs.append("축하합니다. 홈런입니다")}
+        else{
+            let strike=0;
+            let ball=0;
+            for (let i=0; i<4; i++){
+                const index =answer.join('').indexOf(value[i]);
+                if(index>-1){ //숫자가 존재할 떄
+                    if(index==i){
+                    strike+=1; // strike인가
+                    }
+                    else{ball+=1;}
+                }
+                }
+            if(ball==0 & strike==0){ $logs.append(`${value} : 아웃` , document.createElement('br')); out+=1;
+                                    if(out>=3){$logs.append(`패배! 정답은 ${answer.join('')}입니다.`)}}
+            else{$logs.append(`${value} : ${strike} 스트라이크, ${ball} 볼` , document.createElement('br'));}
+            tries.push(value); 
+            }
+        if(tries.length>=10){
+            alert(`실패하셨습니다. 정답은 ${answer.join('')}입니다.`);
         }
-        else{}
-    })
+        
+    }
+})
 </script>
 </body>
 </html>
