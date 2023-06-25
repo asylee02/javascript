@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <form id="form">
+    <input type="text" id="input">
+    <button id="button">보내기</button>
+  </form>
+  <button id="result">결과는?</button>
+  <div id="select"></div>
+
+  <script>
+    const $form = document.querySelector("#form");
+    const $input = document.querySelector("#input");
+    const $button = document.querySelector("#button");
+    const $result = document.querySelector("#result");
+    const $select = document.querySelector("#select");
+
+    const food = [];
+
+    $form.addEventListener('submit',(event)=>{
+      event.preventDefault();
+      food.push($input.value);
+      console.log(`위`,food);
+      $input.value="";
+    })
+    console.log(`아래`,food);
+    
+    $result.addEventListener("click",()=>{
+      const random=Math.floor(Math.random()*food.length);
+     console.log(`난수`,random);
+      $select.textContent=food[random];
+      console.log(random);
+    }
+    )
+  </script>
+</body>
+</html>
