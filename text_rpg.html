@@ -24,7 +24,7 @@
             <div id="menu-1">1.모험</div>
             <div id="menu-2">2.휴식</div>
             <div id="menu-3">3.종료</div>
-            <input id="menu-input"/>
+            <input id="menu-input" type="number"/>
             <button id="menu-button">입력</button>
         </form>
 
@@ -32,7 +32,7 @@
             <div id="battle-1">1.공격</div>
             <div id="battle-2">2.회복</div>
             <div id="battle-3">3.도망</div>
-            <input id="battle-input"/>
+            <input id="battle-input" type="number"/>
             <button id="battle-button">입력</button>
         </form>
         <div id="message"></div>
@@ -56,56 +56,125 @@
         const $monsterHp = document.querySelector('#monster-hp');
         const $monsterAtt = document.querySelector('#monster-att');
         const $message = document.querySelector('#message');
+        const $name_input = document.querySelector('#name-input');
+        class Game {
+            constructor(name) {
+                this.monster =null;
+                this.hero=null;
+                this.monsterList =[
+                    {name: '슬라임', hp:25, att:10, xp:10},
+                    {name: '스켈레톤', hp:50, att:15, xp:20},
+                    {name: '마왕', hp:150, att:35, xp:50},
+                 ];
+                 
+                 this.start(name);
+            }
+            start(name) {
+                $gameMenu.addEventListener('submit', this.onGameMenuInput);
+                $battleMenu.addEventListener('submit', this.onBattleMenuInput);
+                this.changeScreen('game');
+                this.hero = new Hero(this, name);
+                
+            }
+            changeScreen(screen){
+                if (screen === 'start'){
+                    $startScreen.style.display = 'block';
+                    $gameMenu.style.display = 'none';
+                    $battleMenu.style.display = 'none';
+                }
+                else if (screen === 'game'){
+                    $startScreen.style.display = 'none';
+                    $gameMenu.style.display = 'block';
+                    $battleMenu.style.display = 'none';
+                }
+                else if (screen === 'battle'){
+                    $startScreen.style.display = 'none';
+                    $gameMenu.style.display = 'none';
+                    $battleMenu.style.display = 'block';
+                }
+            }
+            onGameMenuInput = (event)=>{ 
+                // 태그.addEventListener 했을 때의 this는 앞에 태그임
+                // 화살표가 밖의 this(Game)을 가져오는 역할을 함.
+                event.preventDefault();
+                const input = event.target['menu-input'].value;
+                if (input === '1'){ // 모험
+                    this.changeScreen('battle'); //여기 this는 $gameMenu여야하지만 화살표 함수로 인해 Game이 됨.
+                }else if(input ==='2'){ //휴식
 
-        const hero = {
-            name : '',
-            lev :1,
-            maxHp : 100,
-            hp : 100,
-            xp : 0,
-            att : 10,
-        };
+                }else if(input === '3'){ //종료
 
-        let monster = null;
+                }
+            }
+            onBattleMenuInput = (event) => {
+                const input = event.target['battle-input'].value;
+                if (input === '1'){ //공격
+                }
+                else if(input==='2'){ // 회복
 
-        const monsterList =[
-            {name: '슬라임', hp:25, att:10, xp:10},
-            {name: '스켈레톤', hp:50, att:15, xp:20},
-            {name: '마왕', hp:150, att:35, xp:50},
-        ]
+                }
+                else if(input ==='3'){ // 도망
+                    this.changeScreen('game');
+                }
+            }
+            updateHeroStat() {
+                const {hero} = this;
+                if (hero === null){
+                    $heroName.textContent='';
+                    $heroLevel.textContent='';
+                    $heroHp.textContent='';
+                    $heroXp.textContent='';
+                    $heroAtt.textContent='';
+                    return;
+                }
+                $heroName.textContent=hero.name;
+                $heroLevel.textContent=`${hero.lev}.Lev`;
+                $heroHp.textContent=`HP: ${hero.hp}/${hero.maxHp}`;
+                $heroXp.textContent=`XP: ${hero.xp}/${15*hero.lev}`;
+                $heroAtt.textContent=`ATT: ${hero.att}`;
+            }
+        }
+        
+        class Hero{
+            constructor(game, name){
+                this.game=game;
+                this.name=name;
+                this.lev = 1;
+                this.maxHp = 100;
+                this.hp = 100;
+                this.xp = 0;
+                this.att = 10;
+                this.game.updateHeroStat();
+                
+            }
+            
+            attack(target){
+                target.hp -=this.att;
+            }
+        }
 
+        class Monster {
+            constructor(game, name, hp, att, xp) {
+                this.game = game;
+                this.name = name;
+                this.maxHp = hp;
+                this.hp = hp;
+                this.xp = xp;
+                this.att=att;
+            }
+            attack(target){
+                target.hp -= this.att;
+            }
+        }
+        
+        let game = null;
+        
         $startScreen.addEventListener('submit',(evnet)=>{
             event.preventDefault();
             const name = event.target['name-input'].value;
-            $startScreen.style.display='none';
-            $gameMenu.style.display='block';
-            $heroName.textContent=name;
-            $heroLevel.textContent = `${hero.lev}Lev`;
-            $heroHp.textContent = `HP : ${hero.hp}/${hero.maxHp}`;
-            $heroXp.textContent = `XP : ${hero.xp}/${15 * hero.lev}`
-            $heroAtt.textContent = `ATT : ${hero.att}`;
-            hero.name=name;
+            game = new Game(name);
         });
         
-        $gameMenu.addEventListener('submit',(evnet)=>{
-            event.preventDefault();
-            const input = event.target['menu-input'].value;
-            if (input === '1'){
-                $gameMenu.style.display='none';
-                $battleMenu.style.display = 'block';
-                monster = JSON.parse(
-                    JSON.stringify(monsterList[Math.floor(Math.radnom()*monsterList.length)])
-                );
-                monster.maxHp = monster.hp;
-                $monsterName.textContent = monster.name;
-                $monsterHp.textContent=`HP : ${monster.hp}/${monster.maxHp}`;
-                $monsterAtt.textContent=`ATT : ${monster.att}`;
-            }else if(input ==='2'){
-
-            }else if(input === '3'){
-
-            }
-        });
     </script>
 </body>
 </html>
